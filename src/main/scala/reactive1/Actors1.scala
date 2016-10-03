@@ -105,5 +105,5 @@ object ApplicationMain extends App {
 
   mainActor ! "init"
 
-   Await.result(system.whenTerminated, 1.second)
+  Await.result(system.whenTerminated, 1.second)
 }
