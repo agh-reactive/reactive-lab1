@@ -36,14 +36,14 @@ import scala.concurrent.Await
  *     ...
  * }
  *
- * API documentation: http://doc.akka.io/api/akka/2.2.3
+ * API documentation: https://akka.io/docs/
  * 
 **/
 
 
 /**
  * Logging options: read article
- * http://doc.akka.io/docs/akka/snapshot/scala/logging.html
+ * https://doc.akka.io/docs/akka/current/scala/logging.html
  *
  * a) ActorLogging
  * class MyActor extends Actor with akka.actor.ActorLogging {
@@ -56,9 +56,6 @@ import scala.concurrent.Await
  *     ....
  *  }
  * 
- * Hint: in order to enable logging you can also pass the following arguments to the VM
- * -Dakka.loglevel=DEBUG -Dakka.actor.debug.receive=on
- * (In Eclipse: Run Configuraiton -> Arguments / VM Arguments)
  *
 **/
 
