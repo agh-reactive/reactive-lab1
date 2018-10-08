@@ -62,7 +62,7 @@ import scala.concurrent.Await
 
 class Counter extends Actor {
   var count = 0
-  def receive = {
+  def receive: Receive = {
     case "incr" => count += 1; println(Thread.currentThread.getName + ".")
     case "get"  => sender ! count // "!" operator is pronounced "tell" in Akka
   }
@@ -80,7 +80,7 @@ class Counter extends Actor {
 
 class CounterMain extends Actor {
   
-  def receive = {
+  def receive: Receive = {
     case "init" =>
       val counter = context.actorOf(Props[Counter], "counter")
       counter ! "incr"
