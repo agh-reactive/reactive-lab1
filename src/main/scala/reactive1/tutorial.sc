@@ -26,6 +26,7 @@ object tutorial {
   //////////////////////
 
   // in Scala, "if" is an expression (has value)
+  // Try removing the "else" part. What happens to the type of the expression?
   def abs(x: Double) = if (x < 0) -x else x       //> abs: (x: Double)Double
   abs(-2)                                         //> res1: Double = 2.0
   abs(2)                                          //> res2: Double = 2.0
@@ -62,7 +63,7 @@ object tutorial {
   def sumInts(a: Int, b: Int) = sum(a, b, (x: Int) => x)
                                                   //> sumInts: (a: Int, b: Int)Int
 
-  // Or sume of squares:
+  // Or sum of squares:
   def sumSquares(a: Int, b: Int) = sum(a, b, (x: Int) => x * x)
                                                   //> sumSquares: (a: Int, b: Int)Int
 
