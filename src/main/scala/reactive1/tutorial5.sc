@@ -52,6 +52,7 @@ object tutorial5 {
     adder.add(a, b)
 
   // above sum can be also written with possibly nicer syntax
+  // def implicitly[T](implicit e: T): T = e
   def sum2[A: Add](a: A, b: A): A = {
     implicitly[Add[A]].add(a, b)
   }
