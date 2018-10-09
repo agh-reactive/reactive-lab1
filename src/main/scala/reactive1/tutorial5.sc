@@ -37,7 +37,7 @@ object tutorial5 {
   }
 
   object Basket {
-    implicit val addRational = new Add[Basket] {
+    implicit val addBasket = new Add[Basket] {
       override def add(x: Basket, y: Basket): Basket =
         new Basket(x.items ++ y.items)
     }
