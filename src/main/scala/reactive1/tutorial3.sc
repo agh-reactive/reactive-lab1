@@ -1,13 +1,10 @@
-import scala.util.{ Try, Success, Failure }
 
 object tutorial3 {
 
-  class Rational(val numer: Int, val denom: Int) {
+  // default argument instead of overloading the constructor
+  class Rational(val numer: Int, val denom: Int = 1) {
 
     require(denom != 0) // precondition for the main constructor
-
-    // another constructor can be added like this:
-    def this(x: Int) = this(x, 1)
 
     // adds two Rational numbers and returns a new Rational which represents the sum
     def +(that: Rational) =
@@ -40,5 +37,7 @@ object tutorial3 {
   // *** Note ***
   // Companion objects can be used where static classes were used in Java
   // Typical use is an object factory.
+  // But companion objects are much more than that:
+  // https://softwareengineering.stackexchange.com/questions/179390/what-are-the-advantages-of-scalas-companion-objects-vs-static-methods
 
 }
