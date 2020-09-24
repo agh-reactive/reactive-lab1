@@ -1,4 +1,4 @@
-AGH University of Science and Technology (2015-2018)
+AGH University of Science and Technology (2015-2020)
 
 Reactive programming in Scala
 
