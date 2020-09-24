@@ -20,10 +20,8 @@ class Rational(val numer: Int, val denom: Int = 1) {
 
 object Rational {
   // scala compiler will look into companion object when trying to find missing implicit
-  implicit val addRational = new Add[Rational] {
-    override def add(x: Rational, y: Rational): Rational = {
-      new Rational(x.numer * y.denom + y.numer * x.denom, x.denom * y.denom)
-    }
+  implicit val addRational: Add[Rational] = (x: Rational, y: Rational) => {
+    new Rational(x.numer * y.denom + y.numer * x.denom, x.denom * y.denom)
   }
 }
 
@@ -37,10 +35,7 @@ class Basket(val items: Set[String]) {
 }
 
 object Basket {
-  implicit val addBasket = new Add[Basket] {
-    override def add(x: Basket, y: Basket): Basket =
-      new Basket(x.items ++ y.items)
-  }
+  implicit val addBasket: Add[Basket] = (x: Basket, y: Basket) => new Basket(x.items ++ y.items)
 }
 
 val basket1 = new Basket(Set("bicycle"))
