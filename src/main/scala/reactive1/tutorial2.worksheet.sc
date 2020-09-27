@@ -14,7 +14,6 @@ class Rational1(val numer: Int, val denom: Int)
 
 val r = new Rational1(1, 2)
 val n = r.numer
-                                             //> res0: Int = 1
 
 // Let's add a few methods to this class:
 class Rational(val numer: Int, val denom: Int) {
@@ -31,14 +30,14 @@ class Rational(val numer: Int, val denom: Int) {
   override def toString = numer + "/" + denom
 }
 
-val r1 = new Rational(2)                        //> r1  : tutorial2.Rational = 2/1
-val r2 = new Rational(3, 4)                     //> r2  : tutorial2.Rational = 3/4
+val r1 = new Rational(2)                        
+val r2 = new Rational(3, 4)                     
 
 // all two-argument functions can be written in an infix notation
 // "r1.add(r2)" is equivalent to "r1 add r2"
 // in fact method "add" could be named "+" because it is a valid identifier!
 // -> please make this modification
-r1 add r2                                       //> res1: tutorial2.Rational = 11/4
+r1 add r2                                      
 
 ////////////////////////////////////
 // 2. Abstract classes and traits //
@@ -71,7 +70,6 @@ class NonEmpty(val elements: List[Int]) extends IntSet {
   override def toString = elements mkString ","
 }
 
-val s1 = new NonEmpty(1)                        //> s1  : tutorial2.NonEmpty = 1
-val s2 = s1 incl 2                              //> s2  : tutorial2.IntSet = 1,2
-val s3 = s2 incl 1                              //> s3  : tutorial2.IntSet = 1,2
-
+val s1 = new NonEmpty(1)                        
+val s2 = s1 incl 2                              
+val s3 = s2 incl 1                              

@@ -59,7 +59,3 @@ sum2(basket1, basket2)
 // TODO: Uncomment and make it compile
 //List(rational1, rational2).sorted
 //List(basket1, basket2).sorted
-
-
-
-

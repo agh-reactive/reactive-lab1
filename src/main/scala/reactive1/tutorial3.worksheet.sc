@@ -1,6 +1,5 @@
 
 
-
 // default argument instead of overloading the constructor
 class Rational(val numer: Int, val denom: Int = 1) {
 
@@ -32,7 +31,7 @@ object Rational {
 // depending on the number of arguments.
 
 // now we can write:
-val r1 = Rational(1, 2)                         //> r1  : tutorial3.Rational = 1/2
+val r1 = Rational(1, 2)                         
 
 // *** Note ***
 // Companion objects can be used where static classes were used in Java
