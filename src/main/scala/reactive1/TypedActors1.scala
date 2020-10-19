@@ -22,8 +22,7 @@ import scala.concurrent.Await
  * Messages:
  * - are received sequentially and enqueued
  * - processing one message is atomic
- *
- **/
+ */
 /**
  * object Behaviors {
  *   def setup[T](factory: ActorContext[T] => Behavior[T]): Behavior[T]
@@ -33,42 +32,45 @@ import scala.concurrent.Await
  *
  * abstract class AbstractBehavior[T](protected val context: ActorContext[T]) extends ExtensibleBehavior[T] {
  *   def onMessage(msg: T): Behavior[T]
- *   def onSignal: PartialFunction[Signal, Behavior[T]] = PartialFunction.empty
  *   ...
  * }
  *
  * API documentation: https://akka.io/docs/
- *
- **/
+ */
 /**
  * Logging options: read article
  * https://doc.akka.io/docs/akka/current/typed/logging.html
  *
- * a) ActorContext.log
+ * a) Behaviors.setup[String] { context =>
+ *   context.setLoggerName("com.myservice.BackendManager")
+ *   context.log.info("Starting up")
+ *   ...
+ * }
+ *
+ * b) ActorContext.log
  * trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvider {
  *   def log: Logger
  *   ...
  * }
  *
- * b) Behaviors.logMessages
+ * c) Behaviors.logMessages
  *  Behaviors.logMessages(MyBehavior())
- *
- *
- **/
+ */
 // 1. Functional Way
 object TypedCounter {
   trait Command
-  final case object Increment                   extends Command
-  final case class Get[T](replyTo: ActorRef[T]) extends Command
+  final case object Increment                                       extends Command
+  final case class Get(replyTo: ActorRef[TypedCounterMain.Message]) extends Command
 
-  private def apply(count: Int): Behavior[Command] = Behaviors.receiveMessage {
-    case Increment =>
-      println(Thread.currentThread.getName + ".")
-      TypedCounter(count + 1)
-    case get: Get[Int] =>
-      get.replyTo ! count
-      Behaviors.same
-  }
+  private def apply(count: Int): Behavior[Command] =
+    Behaviors.receiveMessage {
+      case Increment =>
+        println(Thread.currentThread.getName + ".")
+        TypedCounter.apply(count + 1)
+      case Get(replyTo: ActorRef[TypedCounterMain.Message]) =>
+        replyTo ! TypedCounterMain.Count(count)
+        Behaviors.same
+    }
 
   def apply(): Behavior[Command] = apply(0)
 }
@@ -76,8 +78,8 @@ object TypedCounter {
 // 2. OOP way
 object TypedCounterOOP {
   trait Command
-  final case object Increment                   extends Command
-  final case class Get[T](replyTo: ActorRef[T]) extends Command
+  final case object Increment                                       extends Command
+  final case class Get(replyTo: ActorRef[TypedCounterMain.Message]) extends Command
 
   def apply(): Behavior[Command] = Behaviors.setup(context => new TypedCounterOOP(context))
 }
@@ -88,15 +90,16 @@ class TypedCounterOOP(
   import TypedCounterOOP._
   var count = 0
 
-  override def onMessage(msg: TypedCounterOOP.Command): Behavior[TypedCounterOOP.Command] = msg match {
-    case Increment =>
-      println(Thread.currentThread.getName + ".")
-      count += 1
-      this
-    case get: Get[Int] =>
-      get.replyTo ! count
-      this
-  }
+  override def onMessage(msg: TypedCounterOOP.Command): Behavior[TypedCounterOOP.Command] =
+    msg match {
+      case Increment =>
+        context.log.info(Thread.currentThread.getName + ".")
+        count += 1
+        this
+      case Get(replyTo) =>
+        replyTo ! TypedCounterMain.Count(count)
+        this
+    }
 }
 
 /**
@@ -106,36 +109,35 @@ class TypedCounterOOP(
  *    def tell(msg: T): Unit
  *    ...
  *  }
- *
- **/
+ */
 object TypedCounterMain {
-  import TypedCounter._
-  def apply(): Behavior[Any] =
-    Behaviors.receive(
-      (context, msg) =>
-        msg match {
-          case "init" =>
-            val counter = context.spawn(TypedCounter() /* or CounterOOP() */, "counter")
-            counter ! Increment
-            counter ! Increment
-            counter ! Increment
-            counter ! Get(context.self)
-            Behaviors.same
-          case count: Int =>
-            println(s"count received: $count")
-            println(Thread.currentThread.getName + ".")
-            context.system.terminate
-            Behaviors.same
-          case _ =>
-            Behaviors.same
+  sealed trait Message
+  case object Init             extends Message
+  case class Count(count: Int) extends Message
+
+  def initCounterMain(): Behavior[Message] =
+    Behaviors.receive((context, msg) =>
+      msg match {
+        case Init =>
+          val counter = context.spawn(TypedCounter.apply() /* or CounterOOP() */, "counter")
+          counter ! TypedCounter.Increment
+          counter ! TypedCounter.Increment
+          counter ! TypedCounter.Increment
+          counter ! TypedCounter.Get(context.self)
+          Behaviors.same
+        case Count(count) =>
+          println(s"count received: $count")
+          println(Thread.currentThread.getName + ".")
+          context.system.terminate
+          Behaviors.same
       }
     )
 }
 
 object TypedApplicationMain extends App {
-  val system = ActorSystem(TypedCounterMain(), "Reactive1")
+  val system: ActorSystem[TypedCounterMain.Message] = ActorSystem(TypedCounterMain.initCounterMain(), "Reactive1")
 
-  system ! "init"
+  system ! TypedCounterMain.Init
 
   Await.result(system.whenTerminated, Duration.Inf)
 }
