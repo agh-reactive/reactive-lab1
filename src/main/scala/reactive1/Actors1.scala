@@ -20,8 +20,7 @@ import scala.concurrent.Await
  * Messages:
  * - are received sequentially and enqueued
  * - processing one message is atomic
- *
-**/
+ */
 /**
  * type Receive = PartialFunction[Any, Unit]
  *           Any  -> any message can arrive
@@ -34,8 +33,7 @@ import scala.concurrent.Await
  * }
  *
  * API documentation: https://akka.io/docs/
- *
-**/
+ */
 /**
  * Logging options: read article
  * https://doc.akka.io/docs/akka/current/scala/logging.html
@@ -50,13 +48,11 @@ import scala.concurrent.Await
  *  def receive = LoggingReceive {
  *     ....
  *  }
- *
- *
-**/
-class Counter extends Actor {
+ */
+class Counter extends Actor with ActorLogging {
   var count = 0
   def receive: Receive = {
-    case "incr" => count += 1; println(Thread.currentThread.getName + ".")
+    case "incr" => count += 1; log.info(Thread.currentThread.getName + ".")
     case "get"  => sender ! count // "!" operator is pronounced "tell" in Akka
   }
 }
@@ -68,8 +64,7 @@ class Counter extends Actor {
  *    def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit
  *    ...
  *  }
- *
-**/
+ */
 class CounterMain extends Actor {
 
   def receive: Receive = {
@@ -95,3 +90,13 @@ object ApplicationMain extends App {
 
   Await.result(system.whenTerminated, Duration.Inf)
 }
+
+// Bonus, Scala 3
+@main def applicationMainDef(): Unit = 
+  val system    = ActorSystem("Reactive1")
+  val mainActor = system.actorOf(Props[CounterMain], "mainActor")
+
+  mainActor ! "init"
+
+  Await.result(system.whenTerminated, Duration.Inf)
+

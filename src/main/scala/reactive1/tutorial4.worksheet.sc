@@ -1,10 +1,10 @@
-
+import scala.language.implicitConversions
 //////////////////
 // 1. Implicits //
 //////////////////
 
 // a) conversion
-implicit def double2Int(d: Double) = d.toInt    //> double2Int: (d: Double)Int
+implicit def double2Int(d: Double): Int = d.toInt    //> double2Int: (d: Double)Int
 val x: Int = 44.0                              
 
 implicit def defaultVal: Double = 42.0          //> defaultVal: => Double

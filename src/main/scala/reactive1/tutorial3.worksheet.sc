@@ -11,7 +11,7 @@ class Rational(val numer: Int, val denom: Int = 1) {
       this.numer * that.denom + that.denom * this.denom,
       this.denom * that.denom)
 
-  override def toString = numer + "/" + denom
+  override def toString = s"$numer/$denom"
 }
 
 //////////////////////////////////////
@@ -19,6 +19,7 @@ class Rational(val numer: Int, val denom: Int = 1) {
 //////////////////////////////////////
 
 // let's define a companion object for the class Rational
+// Note: No longer true for Scala 3 where each class has apply methods automatically generated
 object Rational {
   def apply(x: Int, y: Int) = new Rational(x, y)
   def apply(x: Int) = new Rational(x)

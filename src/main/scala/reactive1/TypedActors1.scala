@@ -5,9 +5,9 @@ import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 
 import scala.concurrent.duration._
 import scala.concurrent.Await
-//////////////////////////////////////////
+//////////////////////////////////////////////////
 // Introduction to Scala (Akka [Typed]) Actors  //
-//////////////////////////////////////////
+//////////////////////////////////////////////////
 
 /**
  * Actor:
@@ -56,26 +56,8 @@ import scala.concurrent.Await
  * c) Behaviors.logMessages
  *  Behaviors.logMessages(MyBehavior())
  */
-// 1. Functional Way
-object TypedCounter {
-  trait Command
-  final case object Increment                                       extends Command
-  final case class Get(replyTo: ActorRef[TypedCounterMain.Message]) extends Command
 
-  private def apply(count: Int): Behavior[Command] =
-    Behaviors.receiveMessage {
-      case Increment =>
-        println(Thread.currentThread.getName + ".")
-        TypedCounter.apply(count + 1)
-      case Get(replyTo: ActorRef[TypedCounterMain.Message]) =>
-        replyTo ! TypedCounterMain.Count(count)
-        Behaviors.same
-    }
-
-  def apply(): Behavior[Command] = apply(0)
-}
-
-// 2. OOP way
+// 1. OOP way
 object TypedCounterOOP {
   trait Command
   final case object Increment                                       extends Command
@@ -100,6 +82,25 @@ class TypedCounterOOP(
         replyTo ! TypedCounterMain.Count(count)
         this
     }
+}
+
+// 2. Functional Way
+object TypedCounter {
+  trait Command
+  final case object Increment                                       extends Command
+  final case class Get(replyTo: ActorRef[TypedCounterMain.Message]) extends Command
+
+  private def apply(count: Int): Behavior[Command] =
+    Behaviors.receiveMessage {
+      case Increment =>
+        println(Thread.currentThread.getName + ".")
+        TypedCounter(count + 1)
+      case Get(replyTo: ActorRef[TypedCounterMain.Message]) =>
+        replyTo ! TypedCounterMain.Count(count)
+        Behaviors.same
+    }
+
+  def apply(): Behavior[Command] = apply(0)
 }
 
 /**
@@ -141,3 +142,9 @@ object TypedApplicationMain extends App {
 
   Await.result(system.whenTerminated, Duration.Inf)
 }
+
+// Bonus, Scala 3
+@main def typedApplicationMainDef(): Unit =
+  val system: ActorSystem[TypedCounterMain.Message] = ActorSystem(TypedCounterMain.initCounterMain(), "Reactive1")
+  system ! TypedCounterMain.Init
+  Await.result(system.whenTerminated, Duration.Inf)
