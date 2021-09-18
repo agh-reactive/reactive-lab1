@@ -15,7 +15,7 @@ implicit class Adding[A](x: A)(implicit s: Add[A]) {
 }
 
 class Rational(val numer: Int, val denom: Int = 1) {
-  override def toString = numer + "/" + denom
+  override def toString = s"$numer/$denom"
 }
 
 object Rational {
@@ -59,3 +59,20 @@ sum2(basket1, basket2)
 // TODO: Uncomment and make it compile
 //List(rational1, rational2).sorted
 //List(basket1, basket2).sorted
+
+
+// Bonus, Scala3 typeclass implementation
+object Scala3Rational {
+  trait Add[A]:
+    extension (x: A) def add(y: A): A 
+    extension (x: A) def +(y: A): A = add(x)(y)
+
+  given Add[Rational] with
+    extension (x: Rational) def add(y: Rational): Rational = 
+      new Rational(x.numer * y.denom + y.numer * x.denom, x.denom + y.denom)
+
+  def sumScala3[A: Add](x: A, y: A): A = 
+    summon[Add[A]].add(x)(y)
+
+  Rational(1,2) + Rational(1,2)
+}

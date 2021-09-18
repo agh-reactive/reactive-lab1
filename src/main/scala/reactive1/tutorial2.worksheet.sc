@@ -27,7 +27,7 @@ class Rational(val numer: Int, val denom: Int) {
       this.numer * that.denom + that.numer * this.denom,
       this.denom * that.denom)
 
-  override def toString = numer + "/" + denom
+  override def toString = s"$numer/$denom"
 }
 
 val r1 = new Rational(2)                        
