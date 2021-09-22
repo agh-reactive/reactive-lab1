@@ -1,14 +1,15 @@
 name := """reactive-lab1"""
 
-version := "1.2"
+version := "1.3"
 
-scalaVersion := "2.13.3"
+scalaVersion := "2.13.6"
+val akkaVersion = "2.6.16"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor"               % "2.6.8",
-  "com.typesafe.akka" %% "akka-testkit"             % "2.6.8" % "test",
-  "com.typesafe.akka" %% "akka-actor-typed"         % "2.6.8",
-  "com.typesafe.akka" %% "akka-actor-testkit-typed" % "2.6.8" % "test",
-  "org.scalatest"     %% "scalatest"                % "3.2.0" % "test",
-  "ch.qos.logback"    % "logback-classic"           % "1.2.3"
+  "com.typesafe.akka" %% "akka-actor"               % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit"             % akkaVersion % "test",
+  "com.typesafe.akka" %% "akka-actor-typed"         % akkaVersion,
+  "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % "test",
+  "org.scalatest"     %% "scalatest"                % "3.2.9" % "test",
+  "ch.qos.logback"    % "logback-classic"           % "1.2.6"
 )
